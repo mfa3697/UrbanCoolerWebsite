@@ -7,6 +7,18 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ✅ CSP erlaubt Fetch zu Google Apps Script -->
+    <meta http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    connect-src 'self' https://script.google.com https://*.googleusercontent.com;
+    img-src 'self' data: blob:;
+    style-src 'self' 'unsafe-inline';
+    script-src 'self';
+    font-src 'self' data:;
+  ">
+
     <title>urban-cooler</title>
   </head>
   <body>
