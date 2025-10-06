@@ -260,7 +260,6 @@ export default function App() {
             <a className="hover:text-sky-400" href="#auswirkungen">Auswirkungen</a>
             <a className="hover:text-sky-400" href="#loesung">Lösung</a>
             <a className="hover:text-sky-400" href="#features">Hauptfunktionen</a>
-            <a className="hover:text-sky-400" href="#case">Case Studies</a>
             <a className="hover:text-sky-400" href="#cta">Kontakt</a>
           </nav>
 
@@ -504,7 +503,7 @@ export default function App() {
         </Container>
       </Section>
 
-      {/* CASE STUDIES */}
+      {/* CASE STUDIES
       <Section id="case" className="bg-slate-950">
         <Container>
           <div className="flex items-center justify-between">
@@ -524,7 +523,7 @@ export default function App() {
             </Card>
           </div>
         </Container>
-      </Section>
+      </Section> */}
 
       {/* CTA / KONTAKT – zentriert */}
       <Section id="cta" className="bg-slate-900">
@@ -646,10 +645,7 @@ export default function App() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p>Rechtsform: GmbH</p>
-                <p>Firmensitz: Dornbirn, Österreich</p>
-                <p>Firmenbuchnummer: <em>FN 165415h</em></p>
-                <p>Firmenbuchgericht: <em>Feldkirch</em></p>
+                <p>Ansprechpartner: milan.fajmogovic@students.fhv.at</p>
               </div>
             </div>
           </div>
