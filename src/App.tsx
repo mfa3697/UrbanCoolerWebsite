@@ -33,7 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import Logo from "@/assets/UHI_Logo_ohne_Schrift.png";
 import UcDashboard from "@/assets/uc_dashboard.png";
-import UcDashboardHeat from "@/assets/uc_dashboard_heatmap.png";
+import UcDashboardHeat from "@/assets/uc_dashboard_Heatmap.png";
 import UcWetter from "@/assets/uc_wetter_ansicht.png";
 
 /* ========================================================================
