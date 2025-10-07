@@ -27,17 +27,13 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Build site
+      - name: Build
         run: npm run build
-        env:
-          # Optional: falls du Umgebungsvariablen brauchst
-          # VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          NODE_ENV: production
 
-      - name: Upload build artifact
+      - name: Upload artifact (dist)
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -49,7 +45,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-
