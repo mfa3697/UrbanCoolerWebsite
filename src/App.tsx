@@ -427,7 +427,7 @@ export default function App() {
       </Section>
 
       {/* LÖSUNG */}
-      <Section id="loesung" className="bg-slate-950">
+      <Section id="loesung" className="bg-slate-900">
         <Container className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">Die Lösung: Daten + Handlung</h2>
@@ -478,7 +478,7 @@ export default function App() {
       </Section>
 
       {/* HAUPTFUNKTIONEN */}
-      <Section id="features" className="bg-slate-900">
+      <Section id="features" className="bg-slate-950">
         <Container>
           <h2 className="text-3xl font-bold tracking-tight">Hauptfunktionen</h2>
         </Container>
