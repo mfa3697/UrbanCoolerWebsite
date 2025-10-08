@@ -136,21 +136,78 @@ function Modal({
   );
 }
 
-/* ---------- Mock heat info generator (client-side placeholder) ---------- */
+/* ---------- Heat Info via APIs (Zippopotam + Open-Meteo) ---------- */
 function useHeatInfo(plz: string): HeatInfo | null {
-  return useMemo(() => {
-    if (!plz) return null;
-    const seed = [...plz].reduce((a, c) => a + c.charCodeAt(0), 0);
-    const delta = (seed % 30) / 10; // 0.0 – 2.9
-    const uhi = 1 + (seed % 20) / 10; // 1.0 – 2.9°C
-    return {
-      region: `PLZ ${plz}`,
-      uhiDelta: uhi.toFixed(1),
-      heatIndex: (28 + delta).toFixed(1),
-      tips: ["Schattenwege bevorzugen", "Regelmäßig trinken", "Mittags direkte Sonne meiden"],
-    };
+  const [data, setData] = React.useState<HeatInfo | null>(null);
+
+  React.useEffect(() => {
+    if (!/^\d{4,5}$/.test(plz)) { setData(null); return; }
+
+    const country = plz.length === 4 ? "AT" : "DE";
+    let abort = false;
+
+    (async () => {
+      try {
+        // 1) Geokoordinaten zur PLZ
+        const geoRes = await fetch(`https://api.zippopotam.us/${country}/${plz}`);
+        if (!geoRes.ok) throw new Error("Geocoding failed");
+        const geo = await geoRes.json();
+        const place = geo.places?.[0];
+        if (!place) throw new Error("No place for PLZ");
+        const lat = parseFloat(place.latitude);
+        const lon = parseFloat(place.longitude);
+        const regionName = `${place["place name"]}, ${geo.country}`;
+
+        // 2) Aktuelle Temperatur & Luftfeuchte
+        const meteoRes = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+          `&current=temperature_2m,relative_humidity_2m&timezone=auto`
+        );
+        if (!meteoRes.ok) throw new Error("Weather failed");
+        const meteo = await meteoRes.json();
+        const t = meteo?.current?.temperature_2m as number | undefined;
+        const rh = meteo?.current?.relative_humidity_2m as number | undefined;
+        if (typeof t !== "number") throw new Error("Missing temperature");
+
+        // 3) Tipps abhängig von Temperatur
+        const tips: string[] = [];
+        if (t < 20) {
+          tips.push("Angenehme Temperaturen – genieße den Tag im Freien.");
+        } else if (t < 25) {
+          tips.push("Regelmäßig trinken, vor allem bei längerer Aktivität draußen.");
+          tips.push("Schatten bevorzugen, Sonnenhut tragen.");
+        } else if (t < 30) {
+          tips.push("Mittags Sonne meiden.");
+          tips.push("Leichte Kleidung tragen und ausreichend trinken.");
+        } else if (t < 35) {
+          tips.push("Belastung reduzieren und ausreichend Wasser trinken.");
+          tips.push("Auf ältere Menschen und Kinder achten.");
+        } else {
+          tips.push("Hitzewarnung: Aufenthalt im Freien vermeiden!");
+          tips.push("Kühle Räume aufsuchen und viel trinken.");
+          tips.push("Auf Anzeichen von Überhitzung achten.");
+        }
+
+        if (!abort) {
+          setData({
+            region: regionName,
+            uhiDelta: rh?.toFixed(0) ?? "–", // hier z.B. Luftfeuchte anzeigen, falls du den Wert behalten willst
+            heatIndex: t.toFixed(1),          // jetzt = aktuelle Lufttemperatur
+            tips,
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        if (!abort) setData(null);
+      }
+    })();
+
+    return () => { abort = true; };
   }, [plz]);
+
+  return data;
 }
+
 
 export default function App() {
   const [plz, setPlz] = useState<string>("");
@@ -355,11 +412,13 @@ export default function App() {
                       {heat ? (
                         <div className="space-y-1 text-slate-300">
                           <div><span className="font-semibold">Region:</span> {heat.region}</div>
-                          <div><span className="font-semibold">UHI-Differenz:</span> +{heat.uhiDelta}°C</div>
-                          <div><span className="font-semibold">Heat Index heute:</span> {heat.heatIndex}°C</div>
+                          <div><span className="font-semibold">Temperatur heute:</span> {heat.heatIndex}°C</div>
+                          {heat.uhiDelta !== "–" && (
+                            <div><span className="font-semibold">Luftfeuchte:</span> {heat.uhiDelta}%</div>
+                          )}
                           <div className="mt-2"><span className="font-semibold">Tipps:</span> {heat.tips.join(" • ")}</div>
                           <div className="mt-3 flex items-center gap-2 text-slate-400">
-                            <Share2 className="h-4 w-4" /> Deine Gemeinde sieht, wie viele sich für Hitzeschutz interessieren.
+                            <Share2 className="h-4 w-4" /> Dankeschön für dein Interesse!
                           </div>
                         </div>
                       ) : (
