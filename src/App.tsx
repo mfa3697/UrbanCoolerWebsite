@@ -17,6 +17,9 @@ import {
   Flame,
   CheckCircle2,
   Info,
+  Instagram,
+  Facebook,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -220,6 +223,15 @@ export default function App() {
   const [sending, setSending] = useState<boolean>(false);
   const [openImpressum, setOpenImpressum] = useState<boolean>(false);
   const [openDatenschutz, setOpenDatenschutz] = useState<boolean>(false);
+  const [shareUrl, setShareUrl] = useState<string>("https://urbancooler.at");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setShareUrl(window.location.href);
+    }
+  }, []);
+
+  const whatsappShareHref = `https://wa.me/?text=${encodeURIComponent(shareUrl)}`;
 
   const heat = useHeatInfo(plz);
 
@@ -678,12 +690,43 @@ export default function App() {
 
       {/* FOOTER mit funktionierenden Popups */}
       <footer className="border-t border-slate-800 bg-slate-900">
-        <Container className="flex flex-col items-center justify-between gap-6 py-10 md:flex-row">
-          <div className="flex items-center gap-3 text-sm text-slate-300">
+        <Container className="flex flex-col items-center justify-between gap-6 py-10 text-sm md:flex-row">
+          <div className="flex items-center gap-3 text-center text-slate-300 md:text-left">
             <ThermometerSun className="h-4 w-4" /> © {new Date().getFullYear()} Urban Cooler · Ein Innovationsprojekt der Fachhochschule Vorarlberg
           </div>
 
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-4 text-slate-300">
+            <a
+              href="https://www.instagram.com/urbancoolerat"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="transition-colors hover:text-sky-400"
+              aria-label="Urban Cooler auf Instagram"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61581954385588"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="transition-colors hover:text-sky-400"
+              aria-label="Urban Cooler auf Facebook"
+            >
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a
+              href={whatsappShareHref}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="transition-colors hover:text-sky-400"
+              aria-label="Seite auf WhatsApp teilen"
+              title="Seite auf WhatsApp teilen"
+            >
+              <MessageCircle className="h-5 w-5" />
+            </a>
+          </div>
+
+          <div className="flex items-center gap-6">
             <button className="hover:text-sky-400" onClick={() => setOpenImpressum(true)}>Impressum</button>
             <button className="hover:text-sky-400" onClick={() => setOpenDatenschutz(true)}>Datenschutz</button>
             <a href="#cta" className="hover:text-sky-400">Kontakt</a>
@@ -699,13 +742,10 @@ export default function App() {
               Hochschulstraße 1, 6850 Dornbirn, Österreich
             </p>
             <p>
-              E-Mail: <a className="text-sky-400" href="mailto:info@fhv.at">info@fhv.at</a> · Web:{" "}
+              E-Mail: <a className="text-sky-400" href="mailto:milan.fajmogovic@students.fhv.at">milan.fajmogovic@students.fhv.at</a> · Web:{" "}
               <a className="text-sky-400" href="https://www.fhv.at" target="_blank" rel="noreferrer">www.fhv.at</a>
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p>Ansprechpartner: milan.fajmogovic@students.fhv.at</p>
-              </div>
             </div>
           </div>
         </Modal>
